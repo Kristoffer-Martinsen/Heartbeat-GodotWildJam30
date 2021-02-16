@@ -1,11 +1,19 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Art/Spritesheet.png" type="Texture" id=1]
 [ext_resource path="res://Actors/Player/Player.gd" type="Script" id=2]
+[ext_resource path="res://Actors/ShootComponent.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Actors/Hitbox/Hurtbox.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Actors/HealthComponent.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Actors/Player/PlayerBullet.tscn" type="PackedScene" id=6]
 
 [sub_resource type="CapsuleShape2D" id=1]
-radius = 9.0
+radius = 13.0
 height = 7.0
+
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 8.0
+height = 10.0
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 2 )
@@ -18,3 +26,25 @@ region_rect = Rect2( 0, 0, 32, 32 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -1, 0 )
 shape = SubResource( 1 )
+
+[node name="Heartbeat" type="Timer" parent="."]
+autostart = true
+
+[node name="ShootComponent" parent="Heartbeat" instance=ExtResource( 3 )]
+bullet_scene = ExtResource( 6 )
+
+[node name="Hurtbox" parent="." instance=ExtResource( 4 )]
+position = Vector2( -1, 0 )
+collision_layer = 4
+collision_mask = 8
+
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+shape = SubResource( 2 )
+
+[node name="HealthComponent" parent="." instance=ExtResource( 5 )]
+max_health = 3
+[connection signal="timeout" from="Heartbeat" to="Heartbeat/ShootComponent" method="_on_Heartbeat_timeout"]
+[connection signal="area_entered" from="Hurtbox" to="HealthComponent" method="_on_Hurtbox_area_entered"]
+[connection signal="death" from="HealthComponent" to="." method="_on_HealthComponent_death"]
+
+[editable path="Hurtbox"]

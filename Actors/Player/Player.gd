@@ -16,3 +16,9 @@ func _get_input_direction() -> Vector2:
 	)
 	velocity = Vector2(input_direction_x, input_direction_y)
 	return velocity.normalized()
+
+
+func _on_HealthComponent_death():
+	#DIE
+	get_tree().reload_current_scene()
+	pass # Replace with function body.
