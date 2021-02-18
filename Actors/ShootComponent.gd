@@ -15,15 +15,12 @@ func _on_Heartbeat_timeout() -> void:
 func shoot(number_of_bullets: int) -> void:
 	for b in number_of_bullets:
 		_instanciate_bullet()
-		pass
-
-	pass
 
 func _instanciate_bullet() -> void:
 	var bullet := bullet_scene.instance()
 	bullet.position = owner.position
 	bullet.velocity = _get_shoot_direction()
-	get_parent().add_child(bullet)
+	owner.get_parent().add_child(bullet)
 
 func _get_shoot_direction() -> Vector2:
 	return get_global_mouse_position().normalized()
